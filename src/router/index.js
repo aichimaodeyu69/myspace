@@ -23,7 +23,7 @@ const routes = [
     component: Register
   },
   {
-    path: '/userprofile/',
+    path: '/userprofile/:userId/',
     name: 'userprofile',
     component: UserProfile
   },
@@ -37,7 +37,11 @@ const routes = [
     name: 'notfound',
     component: NotFound
   },
-  
+  {
+    path: '/:catchAll(.*)',
+    redirect: '/404/'
+  },
+
 ]
 
 const router = createRouter({

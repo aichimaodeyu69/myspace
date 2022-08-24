@@ -2,13 +2,11 @@
   <div class="card">
     <div class="card-body">
       <div class="row">
-        <div class="col-3">
-          <img width: class="img-fluid"
-          src="https://cdn.acwing.com/media/user/profile/photo/66183_lg_2ce98b6c50.jpg"
-          alt="" />
+        <div class="col-3 img-field">
+          <img width: class="img-fluid" :src="user.photo" alt="" />
         </div>
         <div class="col-9">
-          <div class="username">{{ fullName }}</div>
+          <div class="username">{{ user.username }}</div>
           <div class="fans">粉丝：{{ user.followerCount }}</div>
           <button
             @click="follow"
@@ -33,7 +31,6 @@
 </template>
 
 <script>
-import { computed } from "vue";
 export default {
   name: "UserProfileInfo",
   props: {
@@ -43,8 +40,6 @@ export default {
     },
   },
   setup(props, context) {
-    let fullName = computed(() => props.user.lastName + props.user.firstName);
-
     const follow = () => {
       context.emit("follow");
     };
@@ -53,10 +48,8 @@ export default {
     };
 
     return {
-      fullName,
       follow,
       unfollow,
-
     };
   },
 };
@@ -78,5 +71,11 @@ img {
 button {
   padding: 2px 4px;
   font-size: 12px;
+}
+
+.img-field {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 </style>

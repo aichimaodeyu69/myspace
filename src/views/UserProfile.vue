@@ -3,10 +3,10 @@
     <div class="row">
       <div class="col-3">
         <UserProfileInfo @follow="follow" @unfollow="unfollow" :user="user" />
-        <UserProfileWrite  @post_a_post="post_a_post"/>
+        <UserProfileWrite @post_a_post="post_a_post" />
       </div>
       <div class="col-9">
-        <UserProfilePosts :posts="posts"/>
+        <UserProfilePosts :posts="posts" />
       </div>
     </div>
   </ContentBase>
@@ -16,8 +16,11 @@
 import ContentBase from "../components/ContentBase";
 import UserProfileInfo from "../components/UserProfileInfo";
 import UserProfilePosts from "../components/UserProfilePosts";
-import UserProfileWrite from "../components/UserProfileWrite"
-import { reactive } from 'vue'
+import UserProfileWrite from "../components/UserProfileWrite";
+import { reactive } from "vue";
+import { useRoute } from "vue-router";
+import $ from "jquery";
+import { useStore } from "vuex";
 export default {
   name: "UserProfile",
   components: {
@@ -27,58 +30,54 @@ export default {
     UserProfileWrite,
   },
   setup() {
-    const user = reactive({
-      id: 1,
-      username: "yanxuecan",
-      lastName: "Yan",
-      firstName: "Xuecan",
-      followerCount: 0,
-      is_followed: false,
+    const store = useStore();
+    const router = useRoute();
+    const userId = router.params.userId;
+    const user = reactive({});
+
+    const posts = reactive({});
+
+    $.ajax({
+      url: "https://app165.acapp.acwing.com.cn/myspace/getinfo/",
+      type: "GET",
+      data: {
+        user_id: userId,
+      },
+      headers: {
+        Authorization: "Bearer " + store.state.user.access,
+      },
+      success(resp) {
+        user.id = resp.id;
+        user.username = resp.username;
+        user.photo = resp.photo;
+        user.followerCount = resp.followerCount;
+        user.is_followed = resp.is_followed;
+        console.log("success");
+      },
     });
 
-    const posts = reactive({
-      count:3,
-      posts:[
-        {
-          id:1,
-          userId:1,
-          content:"今天上了web课很开心",
-        },
-        {
-          id:2,
-          userId:1,
-          content:"今天上了Django课很开心",
-        },
-        {
-          id:3,
-          userId:1,
-          content:"今天上了gin课很开心",
-        }
-
-      ]
-    })
-
-    const follow=()=>{
-      if(user.is_followed) return ;
-      user.is_followed =true;
+    const follow = () => {
+      if (user.is_followed) return;
+      user.is_followed = true;
       user.followerCount++;
     };
-    const unfollow = ()=>{
-      if(!user.is_followed) return;
-      user.is_followed =false;
+    const unfollow = () => {
+      if (!user.is_followed) return;
+      user.is_followed = false;
       user.followerCount--;
     };
 
-    const post_a_post=(content)=>{
+    const post_a_post = (content) => {
       posts.count++;
       posts.posts.unshift({
-          id:1,
-          userId:1,
-          content:content,
-      })
-    }
+        id: 1,
+        userId: 1,
+        content: content,
+      });
+    };
 
     return {
+      userId,
       user,
       follow,
       unfollow,
