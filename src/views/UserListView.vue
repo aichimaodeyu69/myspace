@@ -1,5 +1,5 @@
 <template>
-  <ContentBase>首页</ContentBase>
+  <ContentBase>好友列表</ContentBase>
 </template>
 
 <script>
